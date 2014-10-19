@@ -1,0 +1,22 @@
+{
+	"autoload" : {
+		"psr-4" : {
+			"Rixbeck\\Googleservices\\" : "src"
+		}
+	},
+	"name" : "rixbeck/google-services",
+	"type" : "API service",
+	"license" : "proprietary",
+    "require" : {
+        "bolt/bolt" : ">=2.0.0,<3.0.0",
+        "php" : ">=5.3"
+    },
+    "require-dev" : {
+        "rixbeck/bolt-tasks" : "dev-master"
+    },
+    "repositories" : [{
+            "type" : "vcs",
+            "url" : "https://github.com/rixbeck/bolt-tasks.git"
+        }
+    ]
+}
