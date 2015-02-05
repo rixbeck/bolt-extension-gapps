@@ -24,7 +24,10 @@
 	"repositories" : [{
 			"type" : "vcs",
 			"url" : "https://github.com/rixbeck/bolt-tasks.git"
-		}
+		},{
+            "type" : "vcs",
+            "url" : "https://github.com/google/google-api-php-client.git"
+        }
 	],
 	"extra" : {
         "branch-alias" : {
