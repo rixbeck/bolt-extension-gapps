@@ -2,7 +2,7 @@
 	"autoload" : {
        "files" : [
             "init.php",
-            "lib\apiclient-1.1.2\autoload.php"
+            "lib\\apiclient-1.1.2\\autoload.php"
         ],
 		"psr-4" : {
 			"Bolt\\Extension\\Rixbeck\\Gapps\\" : [
