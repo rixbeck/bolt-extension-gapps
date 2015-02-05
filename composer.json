@@ -1,5 +1,8 @@
 {
 	"autoload" : {
+       "files" : [
+            "init.php"
+        ],
 		"psr-4" : {
 			"Bolt\\Extension\\Rixbeck\\Gapps\\" : [
 				"",
@@ -22,5 +25,11 @@
 			"type" : "vcs",
 			"url" : "https://github.com/rixbeck/bolt-tasks.git"
 		}
-	]
+	],
+	"extra" : {
+        "branch-alias" : {
+            "dev-master" : "0.1.*-dev"
+        }
+    },
+    "minimum-stability" : "dev"
 }
