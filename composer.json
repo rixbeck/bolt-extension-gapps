@@ -18,6 +18,9 @@
 		"php" : ">=5.3",
 		"google/apiclient": "1.1.2"
 	},
+	"provide": {
+        "bolt/bolt": "2.0.3"
+    },
 	"require-dev" : {
 		"rixbeck/bolt-tasks" : "dev-master"
 	},
