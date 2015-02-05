@@ -24,18 +24,7 @@
 	"repositories" : [{
 			"type" : "vcs",
 			"url" : "https://github.com/rixbeck/bolt-tasks.git"
-		},{
-            "type": "package",
-            "package": {
-                "name": "google/apiclient",
-                "version": "1.1.2",
-                "source": {
-                    "url": "https://github.com/google/google-api-client-php.git",
-                    "type": "git",
-                    "reference": "1.1.2"
-                }
-            }
-        }],
+		}],
 	"extra" : {
         "branch-alias" : {
             "dev-master" : "0.1.*-dev"
