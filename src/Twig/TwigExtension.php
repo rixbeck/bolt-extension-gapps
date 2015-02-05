@@ -40,7 +40,7 @@ class TwigExtension extends \Twig_Extension
         return $obj;
     }
 
-    protected function getFunctions()
+    public function getFunctions()
     {
         return $this->functions;
     }
