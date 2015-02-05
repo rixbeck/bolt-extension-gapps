@@ -16,7 +16,7 @@
 	"require" : {
 		"bolt/bolt" : "2.0.3",
 		"php" : ">=5.3",
-		"google/apiclient": "dev-master"
+		"google/apiclient": "1.1.2"
 	},
 	"require-dev" : {
 		"rixbeck/bolt-tasks" : "dev-master"
@@ -25,10 +25,17 @@
 			"type" : "vcs",
 			"url" : "https://github.com/rixbeck/bolt-tasks.git"
 		},{
-            "type" : "git",
-            "url" : "https://github.com/google/google-api-php-client"
-        }
-	],
+            "type": "package",
+            "package": {
+                "name": "google/apiclient",
+                "version": "1.1.2",
+                "source": {
+                    "url": "https://github.com/google/google-api-client-php.git",
+                    "type": "git",
+                    "reference": "1.1.2"
+                }
+            }
+        }],
 	"extra" : {
         "branch-alias" : {
             "dev-master" : "0.1.*-dev"
