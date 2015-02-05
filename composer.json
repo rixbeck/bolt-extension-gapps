@@ -25,7 +25,7 @@
 			"type" : "vcs",
 			"url" : "https://github.com/rixbeck/bolt-tasks.git"
 		},{
-            "type" : "vcs",
+            "type" : "git",
             "url" : "https://github.com/google/google-api-php-client"
         }
 	],
