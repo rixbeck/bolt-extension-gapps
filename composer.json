@@ -1,13 +1,13 @@
 {
 	"autoload" : {
 		"psr-4" : {
-			"Rixbeck\\Googleservices\\" : [
+			"Bolt\\Extension\\Rixbeck\\Gapps\\" : [
 				"",
 				"src"
 			]
 		}
 	},
-	"name" : "rixbeck/google-services",
+	"name" : "rixbeck/gapps",
 	"type" : "API service",
 	"license" : "proprietary",
 	"require" : {

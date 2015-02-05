@@ -1,0 +1,13 @@
+accounts:
+  testdrive:
+    ServiceID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t@developer.gserviceaccount.com
+    ClientID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t.apps.googleusercontent.com
+
+modules: [ calendar ]
+
+calendar:
+  unnepek:
+    account: testdrive
+    CalendarID: brke.org_km782pr76u1l5040got5vprb4g@group.calendar.google.com
+
+
