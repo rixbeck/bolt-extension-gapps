@@ -1,7 +1,8 @@
 {
 	"autoload" : {
        "files" : [
-            "init.php"
+            "init.php",
+            "lib\apiclient-1.1.2\autoload.php"
         ],
 		"psr-4" : {
 			"Bolt\\Extension\\Rixbeck\\Gapps\\" : [
@@ -14,8 +15,8 @@
 	"type" : "bolt-extension",
 	"license" : "proprietary",
 	"require" : {
-		"php" : ">=5.3",
-		"google/apiclient": "1.1.2"
+        "bolt/bolt" : ">=2.0.0,<3.0.0",
+		"php" : ">=5.3"
 	},
 	"require-dev" : {
 		"rixbeck/bolt-tasks" : "dev-master"
