@@ -2,9 +2,11 @@
 namespace Bolt\Extension\Rixbeck\Gapps\Provider;
 
 use Bolt\Extension\Rixbeck\Gapps\Extension;
-use Bolt\Application;
+use Silex\Application;
+use Silex\ServiceProviderInterface;
+use Bolt\Extension\Rixbeck\Gapps\Service\CalendarService;
 
-class CalendarServiceProvider
+class CalendarServiceProvider implements ServiceProviderInterface
 {
 
     protected $calclass;
@@ -13,27 +15,27 @@ class CalendarServiceProvider
 
     public function __construct($frontend)
     {
-        $this->calclass = '\\Bolt\\Extension\\Rixbeck\\Gapps\\Extension\\' . ($frontend) ? 'CalendarFront' : 'CalendarBack';
+        $this->calclass = '\\Bolt\\Extension\\Rixbeck\\Gapps\\Service\\' . (($frontend) ? 'CalendarBaseService' : 'CalendarService');
     }
 
     public function register(Application $app)
     {
-        $config = $app[Extension::CONTAINER_ID]->getConfig();
-
-        $calendarNames = array_keys($config['calendar']);
-        $services = array();
-        foreach ($calendarNames as $calname) {
-            $services[$calname] = $app->share(
-                function ($app) use($calname)
-                {
-                    $calclass = $this->calclass;
-                    $service = new $calclass($app, $calname);
-                    return $service;
-                });
-        }
         $app[self::getProviderId()] = $app->share(
-            function ($app) use($services)
+            function ($app)
             {
+                $config = $app[Extension::CONTAINER_ID]->getConfig();
+                $calendarNames = array_keys($config['calendar']);
+                $services = new Application();
+                foreach ($calendarNames as $calname) {
+                    $services[$calname] = $app->share(
+                        function ($sapp) use($app, $calname)
+                        {
+                            $calclass = $this->calclass;
+                            $service = new $calclass($app, $calname);
+                            return $service;
+                        });
+                }
+
                 return $services;
             });
     }
