@@ -26,7 +26,11 @@ class Extension extends BaseExtension
 
     protected function initializeModules()
     {
-        foreach ($this->config['modules'] as $module) {
+        $modules = array(
+            'accounts'
+        );
+        $modules = array_merge($modules, $this->config['modules']);
+        foreach ($modules as $module) {
             $this->initializeProvider($module);
             $this->initializeTwig($module);
         }
@@ -35,15 +39,20 @@ class Extension extends BaseExtension
     protected function initializeTwig($module)
     {
         $twigmodule = $this->createTwigModule($module);
-        $this->app['twig']->addExtension($twigmodule);
+        if ($twigmodule) {
+            $this->app['twig']->addExtension($twigmodule);
+        }
     }
 
     protected function createTwigModule($modulename)
     {
         $class = sprintf("%s\\Twig\\%s", __NAMESPACE__, ucfirst($modulename));
-        $obj = new $class($this->app);
+        if (class_exists($class)) {
+            $obj = new $class($this->app);
+            return $obj;
+        }
 
-        return $obj;
+        return false;
     }
 
     protected function initializeProvider($module)
@@ -52,5 +61,10 @@ class Extension extends BaseExtension
         if (class_exists($class)) {
             $this->app->register(new $class($this->app['config']->getWhichEnd() === 'frontend'));
         }
+    }
+
+    public static function getProviderId($id)
+    {
+        return sprintf("%s.%s", self::CONTAINER_ID, $id);
     }
 }
