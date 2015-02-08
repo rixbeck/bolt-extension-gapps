@@ -2,6 +2,7 @@ accounts:
   testdrive:
     ServiceID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t@developer.gserviceaccount.com
     ClientID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t.apps.googleusercontent.com
+    KeyFile: "BRKE testbase-946e4e733916.p12"
 
 modules: [ calendar ]
 
