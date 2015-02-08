@@ -3,6 +3,7 @@ namespace Bolt\Extension\Rixbeck\Gapps\Twig;
 
 use Bolt\Application;
 use Bolt\Extension\Rixbeck\Gapps\Provider\CalendarServiceProvider;
+use Bolt\Extension\Rixbeck\Gapps\Extension;
 
 class Calendar extends \Twig_Extension
 {
@@ -24,7 +25,7 @@ class Calendar extends \Twig_Extension
 
     public function getService($calendarName)
     {
-        return $this->app[CalendarServiceProvider::getProviderId()][$calendarName];
+        return $this->app[Extension::getProviderId('calendar')][$calendarName];
     }
 
     public function getName()
