@@ -10,5 +10,13 @@ calendar:
   unnepek:
     account: testdrive
     CalendarID: brke.org_km782pr76u1l5040got5vprb4g@group.calendar.google.com
+    eventtype: simple
+  esemenyek:
+    account:  testdrive
+    CalendarID: brke.org_lsec7eqblho8ejstn7tc4mpi3s@group.calendar.google.com
+    eventtype: simple
+
+eventtypes:
+  simple: description,items(created,description,kind,originalStartTime,recurrence,source,start,status,summary),nextPageToken,nextSyncToken,summary
 
 
