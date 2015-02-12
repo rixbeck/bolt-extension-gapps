@@ -5,7 +5,7 @@ use Bolt\Application;
 use Bolt\Extension\Rixbeck\Gapps\Extension;
 use Bolt\Extension\Rixbeck\Gapps\Exception\AccountServiceException;
 
-class AccountService
+class AccountsService
 {
 
     protected $app;
@@ -18,6 +18,8 @@ class AccountService
 
     protected $key;
 
+    protected $serviceId;
+
     /**
      * Instance of an gapps account for using api
      *
@@ -27,9 +29,10 @@ class AccountService
     public function __construct(Application $app, $accountId)
     {
         $this->app = $app;
-        $config = $this->app[Extension::CONTAINER_ID]->getConfig();
+        $config = $this->app[Extension::CONTAINER_ID]->getConfig()['accounts'];
         $this->config = $config[$accountId];
         $this->accountId = $accountId;
+        $this->serviceId = $this->config['ServiceID'];
     }
 
     /**
@@ -37,15 +40,15 @@ class AccountService
      *
      * @param \Google_Auth_AssertionCredentials $cred
      */
-    public function authorize(\Google_Auth_AssertionCredentials $cred)
+    public function authenticate(\Google_Auth_AssertionCredentials $cred)
     {
         $this->client = $client = new \Google_Client();
-        $appConfig = $this->app['config']->getConfig();
+        $sitename = $this->app['config']->get('general/sitename');
         // @todo url::slugify() will be deprecated in 2.1
-        $this->client->setApplicationName(util::slugify($appConfig->get('sitename')));
+        $this->client->setApplicationName(\utilphp\util::slugify($sitename));
 
-        if (isset($_SESSION['token'])) {
-            $client->setAccessToken($_SESSION['token']);
+        if (isset($_SESSION['token_gapps'])) {
+            $client->setAccessToken($_SESSION['token_gapps']);
         }
 
         $client->setClientId($this->config['ClientID']);
@@ -55,7 +58,9 @@ class AccountService
             $client->getAuth()->refreshTokenWithAssertion($cred);
         }
 
-        $_SESSION[$this->getServiceSessionTk($cred->serviceAccountName)] = $client->getAccessToken();
+        $_SESSION[$this->getServiceSessionTk($cred->scopes)] = $client->getAccessToken();
+
+        return $this->client;
     }
 
     /**
@@ -79,12 +84,13 @@ class AccountService
      * @throws AccountServiceException
      * @return string
      */
-    protected function getKey()
+    public function getKey()
     {
         if ($this->key) {
             return $this->key;
         }
-        $key = file_get_contents($this->config['KeyFile']);
+        $key = file_get_contents(
+            sprintf("%s/extensions/%s", $this->app['resources']->getPath('config'), $this->config['KeyFile']));
         if (! $key) {
             throw new AccountServiceException(sprintf("Can't read KeyFile: %s", $this->config['KeyFile']));
         }
@@ -97,8 +103,9 @@ class AccountService
      * @param string $serviceName
      * @return string
      */
-    protected function getServiceSessionTk($serviceName)
+    protected function getServiceSessionTk($scope)
     {
+        $serviceName = substr($scope, strrpos($scope, '/') + 1);
         return sprintf('service_token_%s_%s', $this->accountId, $serviceName);
     }
 }
