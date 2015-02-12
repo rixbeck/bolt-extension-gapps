@@ -15,8 +15,10 @@ calendar:
     account:  testdrive
     CalendarID: brke.org_lsec7eqblho8ejstn7tc4mpi3s@group.calendar.google.com
     eventtype: simple
+  miserend:
+    account: testdrive
+    CalendarID: brke.org_b1ht4n8nncjlk77lfqhsr2dh50@group.calendar.google.com
+    eventtype: full
 
 eventtypes:
-  simple: description,items(created,description,kind,originalStartTime,recurrence,source,start,status,summary),nextPageToken,nextSyncToken,summary
-
-
+  simple: description,nextPageToken,nextSyncToken,summary,items(created,description,kind,originalStartTime,recurrence,source,start,status,summary)

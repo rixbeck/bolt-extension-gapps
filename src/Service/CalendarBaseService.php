@@ -32,7 +32,7 @@ class CalendarBaseService
 
     protected $defaultOptions;
 
-    protected $defaultFields;
+    protected $eventType = array();
 
     public function __construct(Application $app, $calname)
     {
@@ -41,8 +41,33 @@ class CalendarBaseService
         $config = $this->app[Extension::CONTAINER_ID]->getConfig()['calendar'];
         $this->config = $config[$this->calname = $calname];
         $this->accountName = $this->config['account'];
-        $this->defaultFields = new CalendarItemFields(
-            array(
+    }
+
+    public function test()
+    {
+        return 'Test is OK';
+    }
+
+    public function initialize()
+    {
+        $this->initializeDefaultOptions();
+
+        if (! $this->service) {
+            $this->account = $this->app[Extension::getProviderId('accounts')][$this->accountName];
+            $cred = $this->account->createCredentialsFor('calendar');
+            $client = $this->account->authenticate($cred);
+            $this->service = new \Google_Service_Calendar($client);
+        }
+
+        return $this->service;
+    }
+
+    protected function initializeDefaultOptions($defaults = array())
+    {
+        $etype = $this->app[Extension::CONTAINER_ID]->getConfig()['eventtypes'];
+        if ($this->config['eventtype'] !== 'full') {
+            $eventtype = CalendarItemFields::decode($etype[$this->config['eventtype']]);
+            $this->eventType = $eventtype ?  : array(
                 'description',
                 'nextSyncToken',
                 'summary',
@@ -57,29 +82,9 @@ class CalendarBaseService
                     'status',
                     'summary'
                 )
-            ));
-    }
-
-    public function test()
-    {
-        return 'Test is OK';
-    }
-
-    public function initialize()
-    {
-        if (! $this->service) {
-            $this->initializeDefaultOptions();
-            $this->account = $this->app[Extension::getProviderId('accounts')][$this->accountName];
-            $cred = $this->account->createCredentialsFor('calendar');
-            $client = $this->account->authenticate($cred);
-            $this->service = new \Google_Service_Calendar($client);
+            );
         }
 
-        return $this->service;
-    }
-
-    protected function initializeDefaultOptions($defaults = array())
-    {
         $this->defaultOptions = array_merge($defaults, array(
             'singleEvents' => true
         ));
@@ -89,14 +94,15 @@ class CalendarBaseService
     {
         if (! empty($options)) {
             if (key_exists('fields', $options)) {
-                $fields = $this->defaultFields->getArrayCopy();
+                $fields = $this->eventType;
                 $fields = array_merge_recursive($fields, $options['fields']);
                 $fields = new CalendarItemFields($fields);
                 $options['fields'] = (string) $fields;
             }
         }
-        if (! empty($this->defaultFields) && empty($fields)) {
-            $options['fields'] = (string) $this->defaultFields;
+        if (! empty($this->eventType) && empty($fields)) {
+            $fields = new CalendarItemFields($this->eventType);
+            $options['fields'] = (string) $fields;
         }
         $options = array_merge($this->defaultOptions, $options);
 
