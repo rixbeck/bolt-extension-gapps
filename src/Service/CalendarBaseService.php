@@ -62,6 +62,46 @@ class CalendarBaseService
         return $this->service;
     }
 
+    public function eventList($options = array())
+    {
+        $options = $this->prepareOptions($options);
+
+        return $this->events = new PagingEventsIterator($this->service->events, $this->config['CalendarID'], $options);
+    }
+
+    public function info()
+    {
+        if ($this->events) {
+            return $this->events->getEventlist();
+        }
+
+        return false;
+    }
+
+    public function upcoming($howmany = 100)
+    {
+        $tz = date_default_timezone_get();
+        $now = new \DateTime();
+        $end = clone $now;
+        $end = $end->add(\DateInterval::createFromDateString('1 year'));
+        $endDate = $end->format('c');
+
+        $options = array(
+            'timeMax' => $endDate,
+            'timeMin' => $now->format('c'),
+            'timeZone' => $tz,
+            'maxResults' => $howmany,
+            'orderBy' => 'startTime'
+        );
+
+        return $this->eventList($options);
+    }
+
+    public function getService()
+    {
+        return $this->service;
+    }
+
     protected function initializeDefaultOptions($defaults = array())
     {
         $etype = $this->app[Extension::CONTAINER_ID]->getConfig()['eventtypes'];
@@ -109,43 +149,4 @@ class CalendarBaseService
         return $options;
     }
 
-    public function eventList($options = array())
-    {
-        $options = $this->prepareOptions($options);
-
-        return $this->events = new PagingEventsIterator($this->service->events, $this->config['CalendarID'], $options);
-    }
-
-    public function info()
-    {
-        if ($this->events) {
-            return $this->events->getEventlist();
-        }
-
-        return false;
-    }
-
-    public function upcoming($howmany = 100)
-    {
-        $tz = date_default_timezone_get();
-        $now = new \DateTime();
-        $end = clone $now;
-        $end = $end->add(\DateInterval::createFromDateString('1 year'));
-        $endDate = $end->format('c');
-
-        $options = array(
-            'timeMax' => $endDate,
-            'timeMin' => $now->format('c'),
-            'timeZone' => $tz,
-            'maxResults' => $howmany,
-            'orderBy' => 'startTime'
-        );
-
-        return $this->eventList($options);
-    }
-
-    public function getService()
-    {
-        return $this->service;
-    }
 }

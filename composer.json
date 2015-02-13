@@ -1,21 +1,22 @@
 {
 	"autoload" : {
-       "files" : [
-            "init.php",
-            "lib\\apiclient-1.1.2\\autoload.php"
-        ],
+		"files" : [
+			"init.php",
+			"lib\\apiclient-1.1.2\\autoload.php"
+		],
 		"psr-4" : {
 			"Bolt\\Extension\\Rixbeck\\Gapps\\" : [
 				"",
 				"src"
 			]
-		}
+		},
+		"classmap": [ "lib/When-0.3/" ]
 	},
 	"name" : "rixbeck/gapps",
 	"type" : "bolt-extension",
 	"license" : "proprietary",
 	"require" : {
-        "bolt/bolt" : ">=2.0.0,<3.0.0",
+		"bolt/bolt" : ">=2.0.0,<3.0.0",
 		"php" : ">=5.3"
 	},
 	"require-dev" : {
@@ -24,11 +25,12 @@
 	"repositories" : [{
 			"type" : "vcs",
 			"url" : "https://github.com/rixbeck/bolt-tasks.git"
-		}],
+		}
+	],
 	"extra" : {
-        "branch-alias" : {
-            "dev-master" : "0.1.*-dev"
-        }
-    },
-    "minimum-stability" : "dev"
+		"branch-alias" : {
+			"dev-master" : "0.1.*-dev"
+		}
+	},
+	"minimum-stability" : "dev"
 }
