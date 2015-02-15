@@ -68,6 +68,9 @@ class PagingEventsIterator implements \Iterator, \ArrayAccess
 
     public function getEventlist()
     {
+        if (!$this->eventlist) {
+            $this->fetch();
+        }
         return $this->eventlist;
     }
 
@@ -110,4 +113,5 @@ class PagingEventsIterator implements \Iterator, \ArrayAccess
     {
         unset($this->items[$offset]);
     }
+
 }
