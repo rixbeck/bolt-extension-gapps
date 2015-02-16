@@ -4,21 +4,26 @@ accounts:
     ClientID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t.apps.googleusercontent.com
     KeyFile: "BRKE testbase-946e4e733916.p12"
 
-modules: [ calendar ]
+modules: [ calendar, directorygroups ]
 
 calendar:
   unnepek:
     account: testdrive
     CalendarID: brke.org_km782pr76u1l5040got5vprb4g@group.calendar.google.com
-    eventtype: simple
+    recordtype: simple
   esemenyek:
     account:  testdrive
     CalendarID: brke.org_lsec7eqblho8ejstn7tc4mpi3s@group.calendar.google.com
-    eventtype: simple
+    recordtype: simple
   miserend:
     account: testdrive
     CalendarID: brke.org_b1ht4n8nncjlk77lfqhsr2dh50@group.calendar.google.com
-    eventtype: full
+    recordtype: full
 
-eventtypes:
-  simple: description,nextPageToken,nextSyncToken,summary,items(created,description,kind,originalStartTime,recurrence,source,start,status,summary)
+directorygroups:
+  egyhazkozseg:
+    domain: egyhazkozseg.brke.org
+    recordtype: full
+
+recordtypes:
+  simple: description,nextPageToken,nextSyncToken,summary,items(location,created,description,kind,originalStartTime,recurrence,source,start,status,summary)

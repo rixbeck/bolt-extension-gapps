@@ -1,7 +1,7 @@
 <?php
 namespace Bolt\Extension\Rixbeck\Gapps;
 
-class CalendarItemFields extends \ArrayObject
+class RecordType extends \ArrayObject
 {
 
     /*
@@ -38,14 +38,15 @@ class CalendarItemFields extends \ArrayObject
     {
         $matches = array();
         $fields = array();
-        $found = preg_match('/items\((.*)\)/', $string, $matches);
+        $found = preg_match('/([\w]*)\((.*)\)/', $string, $matches);
         if ($found) {
-            $string = preg_replace('/(items\(.*\))/', '', $string);
-            if (substr($string, -1, 1)==',') {
-                $string = substr($string, 0, -1);
+            $pname = $matches[1];
+            $string = preg_replace('/(' . $pname . '\(.*\))/', '', $string);
+            if (substr($string, - 1, 1) == ',') {
+                $string = substr($string, 0, - 1);
             }
-            $items = explode(',', $matches[1]);
-            $fields['items'] = $items;
+            $items = explode(',', $matches[2]);
+            $fields[$pname] = $items;
         }
         $fields = array_merge($fields, explode(',', $string));
 
