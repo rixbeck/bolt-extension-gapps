@@ -4,7 +4,7 @@ namespace Bolt\Extension\Rixbeck\Gapps\Service;
 use Bolt\Application;
 use Bolt\Extension\Rixbeck\Gapps\Extension;
 use Bolt\Extension\Rixbeck\Gapps\Iterator\PagingEventsIterator;
-use Bolt\Extension\Rixbeck\Gapps\CalendarItemFields;
+use Bolt\Extension\Rixbeck\Gapps\RecordType;
 
 /**
  *
@@ -13,34 +13,14 @@ use Bolt\Extension\Rixbeck\Gapps\CalendarItemFields;
  *
  * @property \Bolt\Extension\Rixbeck\Gapps\Service\AccountsService $account
  */
-class CalendarBaseService
+class CalendarBaseService extends BaseService
 {
-
-    protected $app;
-
-    public $config;
-
-    public $calname;
-
-    public $accountName;
-
-    public $account;
-
-    protected $service;
 
     protected $events;
 
-    protected $defaultOptions;
-
-    protected $eventType = array();
-
-    public function __construct(Application $app, $calname)
+    public function __construct(Application $app, $name)
     {
-        // @todo implement config check
-        $this->app = $app;
-        $config = $this->app[Extension::CONTAINER_ID]->getConfig()['calendar'];
-        $this->config = $config[$this->calname = $calname];
-        $this->accountName = $this->config['account'];
+        parent::__construct($app, $name, 'calendar');
     }
 
     public function test()
@@ -50,16 +30,37 @@ class CalendarBaseService
 
     public function initialize()
     {
-        $this->initializeDefaultOptions();
+        $this->recordType = array(
+            'description',
+            'nextSyncToken',
+            'summary',
+            'items' => array(
+                'created',
+                'description',
+                'kind',
+                'originalStartTime',
+                'recurrence',
+                'source',
+                'start',
+                'status',
+                'summary'
+            )
+        );
 
-        if (! $this->service) {
-            $this->account = $this->app[Extension::getProviderId('accounts')][$this->accountName];
-            $cred = $this->account->createCredentialsFor('calendar');
-            $client = $this->account->authenticate($cred);
-            $this->service = new \Google_Service_Calendar($client);
-        }
+        $this->defaultOptions = array(
+            'singleEvents' => true
+        );
 
-        return $this->service;
+        return parent::initialize();
+    }
+
+    /*
+     * (non-PHPdoc)
+     * @see \Bolt\Extension\Rixbeck\Gapps\Service\BaseService::createService()
+     */
+    protected function createService($client)
+    {
+        $this->service = new \Google_Service_Calendar($client);
     }
 
     public function eventList($options = array())
@@ -100,53 +101,6 @@ class CalendarBaseService
     public function getService()
     {
         return $this->service;
-    }
-
-    protected function initializeDefaultOptions($defaults = array())
-    {
-        $etype = $this->app[Extension::CONTAINER_ID]->getConfig()['eventtypes'];
-        if ($this->config['eventtype'] !== 'full') {
-            $eventtype = CalendarItemFields::decode($etype[$this->config['eventtype']]);
-            $this->eventType = $eventtype ?  : array(
-                'description',
-                'nextSyncToken',
-                'summary',
-                'items' => array(
-                    'created',
-                    'description',
-                    'kind',
-                    'originalStartTime',
-                    'recurrence',
-                    'source',
-                    'start',
-                    'status',
-                    'summary'
-                )
-            );
-        }
-
-        $this->defaultOptions = array_merge($defaults, array(
-            'singleEvents' => true
-        ));
-    }
-
-    protected function prepareOptions($options = array())
-    {
-        if (! empty($options)) {
-            if (key_exists('fields', $options)) {
-                $fields = $this->eventType;
-                $fields = array_merge_recursive($fields, $options['fields']);
-                $fields = new CalendarItemFields($fields);
-                $options['fields'] = (string) $fields;
-            }
-        }
-        if (! empty($this->eventType) && empty($fields)) {
-            $fields = new CalendarItemFields($this->eventType);
-            $options['fields'] = (string) $fields;
-        }
-        $options = array_merge($this->defaultOptions, $options);
-
-        return $options;
     }
 
 }
