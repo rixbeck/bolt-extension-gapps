@@ -20,9 +20,11 @@ abstract class BaseService
 
     /**
      * Account service
+     *
      * @var AccountsService
      */
     public $account;
+
     /**
      *
      * @var Google service instance
@@ -63,7 +65,6 @@ abstract class BaseService
             $this->account = $this->app[Extension::getProviderId('accounts')][$this->accountName];
             $cred = $this->account->createCredentialsFor($this->serviceName);
             $client = $this->account->authenticate($cred);
-            // $this->service = new \Google_Service_Calendar($client);
             $this->createService($client);
         }
 
@@ -96,5 +97,10 @@ abstract class BaseService
         $options = array_merge($this->defaultOptions, $options);
 
         return $options;
+    }
+
+    public function getService()
+    {
+        return $this->service;
     }
 }
