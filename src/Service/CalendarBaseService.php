@@ -97,10 +97,4 @@ class CalendarBaseService extends BaseService
 
         return $this->eventList($options);
     }
-
-    public function getService()
-    {
-        return $this->service;
-    }
-
 }
