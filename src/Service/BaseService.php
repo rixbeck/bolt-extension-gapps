@@ -47,14 +47,14 @@ abstract class BaseService
 
     abstract protected function createService($client);
 
-    public function __construct(Application $app, $name, $servicename)
+    public function __construct(Application $app, $name, $sectionname)
     {
         // @todo implement config check
         $this->app = $app;
-        $config = $this->app[Extension::CONTAINER_ID]->getConfig()[$servicename];
+        $config = $this->app[Extension::CONTAINER_ID]->getConfig($sectionname, '.');
         $this->config = $config[$this->name = $name];
         $this->accountName = $this->config['account'];
-        $this->serviceName = $servicename;
+        $this->serviceName = $this->createServiceName($sectionname);
     }
 
     public function initialize()
@@ -97,6 +97,11 @@ abstract class BaseService
         $options = array_merge($this->defaultOptions, $options);
 
         return $options;
+    }
+
+    protected function createServiceName($section)
+    {
+        return explode('.', $section)[0];
     }
 
     public function getService()
