@@ -7,7 +7,6 @@ use Bolt\Extension\Rixbeck\Gapps\Extension;
 use Bolt\Extension\Rixbeck\Gapps\Recurrences;
 use Bolt\Extension\Rixbeck\Gapps\Iterator\PagingEventsIterator;
 use Bolt\Extension\Rixbeck\Gapps\EventMatrix;
-use Bolt\Extension\Rixbeck\Gapps\RomanNumbers;
 
 class Calendar extends \Twig_Extension
 {
@@ -27,61 +26,6 @@ class Calendar extends \Twig_Extension
             'recurrences' => new \Twig_Function_Method($this, 'createRecurrence'),
             'eventmatrix' => new \Twig_Function_Method($this, 'createEventMatrix')
         );
-    }
-
-    /*
-     * (non-PHPdoc)
-     * @see Twig_Extension::getFilters()
-     */
-    public function getFilters()
-    {
-        // TODO: Auto-generated method stub
-        return array(
-            new \Twig_SimpleFilter('localedate',
-                array(
-                    $this,
-                    'dateFormatFilter'
-                ), array(
-                    'needs_environment' => true
-                )),
-            new \Twig_SimpleFilter('roman',
-                array(
-                    $this,
-                    'romanNumberFilter'
-                ), array(
-                    'needs_environment' => true
-                )),
-            new \Twig_SimpleFilter('trim',
-                array(
-                    $this,
-                    'trim'
-                ))
-        );
-    }
-
-    public function trim($string, $width, $marker = '…')
-    {
-        return mb_strimwidth($string, 0, $width, $marker);
-    }
-
-    public function romanNumberFilter(\Twig_Environment $env, $number)
-    {
-        $rc = new RomanNumbers($number);
-
-        return (string) $rc;
-    }
-
-    public function dateFormatFilter(\Twig_Environment $env, $date, $informat = 'Y-m-d H:i:s', $format = '%Y.%m.%d', $timezone = null)
-    {
-        // @todo pick up this settings to config
-        setlocale(LC_TIME, 'hu_HU.UTF-8');
-        if ($date instanceof DateInterval) {
-            $date = $date->format($informat);
-        } else {
-            $date = \DateTime::createFromFormat($informat, $date);
-        }
-
-        return strftime($format, $date->getTimestamp());
     }
 
     public function getService($calendarName)
