@@ -34,6 +34,8 @@ class Extension extends BaseExtension
             $this->initializeProvider($module);
             $this->initializeTwig($module);
         }
+
+        $this->initializeTwig('general');
     }
 
     protected function initializeTwig($module)
@@ -46,7 +48,8 @@ class Extension extends BaseExtension
 
     protected function createTwigModule($modulename)
     {
-        $class = sprintf("%s\\Twig\\%s", __NAMESPACE__, ucfirst($modulename));
+        $classpath = $this->moduleToClassname($modulename);
+        $class = sprintf("%s\\Twig\\%s", __NAMESPACE__, $classpath);
         if (class_exists($class)) {
             $obj = new $class($this->app);
             return $obj;
@@ -57,14 +60,47 @@ class Extension extends BaseExtension
 
     protected function initializeProvider($module)
     {
-        $class = sprintf("%s\\Provider\\%sServiceProvider", __NAMESPACE__, ucfirst($module));
+        $classpath = $this->moduleToClassname($module);
+        $class = sprintf("%s\\Provider\\%sServiceProvider", __NAMESPACE__, $classpath);
         if (class_exists($class)) {
-            $this->app->register(new $class($this->app['config']->getWhichEnd() === 'frontend'));
+            $this->app->register(new $class($this->app));
         }
     }
 
     public static function getProviderId($id)
     {
         return sprintf("%s.%s", self::CONTAINER_ID, $id);
+    }
+
+    public function getConfig($path = '', $delim = '/')
+    {
+        $conf = parent::getConfig();
+        if ($path) {
+            $segments = explode($delim, $path);
+            foreach ($segments as $index) {
+                if (array_key_exists($index, $conf)) {
+                    $conf = $conf[$index];
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+
+        return $conf;
+    }
+
+    public function moduleToClassname($modulename)
+    {
+        $classpath = implode('\\', array_map('ucfirst', explode('.', $modulename)));
+
+        return $classpath;
+    }
+
+    public function classToModulename($classname)
+    {
+        $modulename = implode('.', array_map('lcfirst', explode('\\', $classname)));
+
+        return $modulename;
     }
 }
