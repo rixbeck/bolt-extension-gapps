@@ -40,9 +40,11 @@ class Extension extends BaseExtension
 
     protected function initializeTwig($module)
     {
-        $twigmodule = $this->createTwigModule($module);
-        if ($twigmodule) {
-            $this->app['twig']->addExtension($twigmodule);
+        if ($this->app['config']->getWhichEnd() == 'frontend') {
+            $twigmodule = $this->createTwigModule($module);
+            if ($twigmodule) {
+                $this->app['twig']->addExtension($twigmodule);
+            }
         }
     }
 
@@ -67,6 +69,11 @@ class Extension extends BaseExtension
         }
     }
 
+    public function isSafe()
+    {
+        return true;
+    }
+
     public static function getProviderId($id)
     {
         return sprintf("%s.%s", self::CONTAINER_ID, $id);
@@ -80,8 +87,7 @@ class Extension extends BaseExtension
             foreach ($segments as $index) {
                 if (array_key_exists($index, $conf)) {
                     $conf = $conf[$index];
-                }
-                else {
+                } else {
                     return false;
                 }
             }
