@@ -9,7 +9,6 @@ class GroupsServiceProvider extends BaseServiceProvider
 
     public function __construct()
     {
-        $this->sectionId = 'directorygroups';
         parent::__construct('Directory\\Groups');
     }
 }
