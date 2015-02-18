@@ -38,7 +38,7 @@ class General extends \Twig_Extension
                 ), array(
                     'needs_environment' => true
                 )),
-            new \Twig_SimpleFilter('trim',
+            new \Twig_SimpleFilter('wtrim',
                 array(
                     $this,
                     'trim'
