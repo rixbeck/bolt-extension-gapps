@@ -17,6 +17,7 @@ abstract class BaseServiceProvider implements ServiceProviderInterface
 
     public function __construct($className = null)
     {
+        $this->sectionId = implode('.', array_map('lcfirst', explode('\\', $className)));
         if ($className) {
             $this->className = $this->serviceFQName($className);
         }
@@ -28,8 +29,9 @@ abstract class BaseServiceProvider implements ServiceProviderInterface
         $app[Extension::getProviderId($this->sectionId)] = $app->share(
             function ($app) use($self)
             {
-                $config = $app[Extension::CONTAINER_ID]->getConfig();
-                $names = array_keys($config[$self->sectionId]);
+                $config = $app[Extension::CONTAINER_ID]->getConfig($self->sectionId, '.');
+                // @todo Exception if $config == false
+                $names = array_keys($config);
                 $services = new Application();
                 foreach ($names as $name) {
                     $services[$name] = $app->share(
@@ -53,4 +55,5 @@ abstract class BaseServiceProvider implements ServiceProviderInterface
     {
         return sprintf('\\Bolt\\Extension\\Rixbeck\\Gapps\\Service\\%sService', ucfirst($classname));
     }
+
 }
