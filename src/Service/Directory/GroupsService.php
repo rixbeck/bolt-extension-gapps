@@ -47,7 +47,7 @@ class GroupsService extends BaseService
      * (non-PHPdoc)
      * @see \Bolt\Extension\Rixbeck\Gapps\Service\BaseService::createServiceName()
      */
-    protected function createServiceName($section)
+    protected function createScopes($section)
     {
         return array(
             'admin.directory.group'

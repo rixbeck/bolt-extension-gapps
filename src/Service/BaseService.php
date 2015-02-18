@@ -54,7 +54,7 @@ abstract class BaseService
         $config = $this->app[Extension::CONTAINER_ID]->getConfig($sectionname, '.');
         $this->config = $config[$this->name = $name];
         $this->accountName = $this->config['account'];
-        $this->serviceName = $this->createServiceName($sectionname);
+        $this->serviceName = $this->createScopes($sectionname);
     }
 
     public function initialize()
@@ -99,7 +99,7 @@ abstract class BaseService
         return $options;
     }
 
-    protected function createServiceName($section)
+    protected function createScopes($section)
     {
         return explode('.', $section)[0];
     }
