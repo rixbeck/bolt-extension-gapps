@@ -4,7 +4,13 @@ accounts:
     ClientID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t.apps.googleusercontent.com
     KeyFile: "BRKE testbase-946e4e733916.p12"
 
-modules: [ calendar, directorygroups ]
+  adminsdk:
+    ServiceID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t@developer.gserviceaccount.com
+    ClientID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t.apps.googleusercontent.com
+    KeyFile: "BRKE testbase-946e4e733916.p12"
+    admin: administrator@brke.org
+
+modules: [ calendar, directory.groups ]
 
 calendar:
   unnepek:
@@ -20,10 +26,12 @@ calendar:
     CalendarID: brke.org_b1ht4n8nncjlk77lfqhsr2dh50@group.calendar.google.com
     recordtype: full
 
-directorygroups:
-  egyhazkozseg:
-    domain: egyhazkozseg.brke.org
-    recordtype: full
+directory:
+  groups:
+    egyhazkozseg:
+      account: adminsdk
+      domain: egyhazkozseg.brke.org
+      recordtype: full
 
 recordtypes:
   simple: description,nextPageToken,nextSyncToken,summary,items(location,created,description,kind,originalStartTime,recurrence,source,start,status,summary)
