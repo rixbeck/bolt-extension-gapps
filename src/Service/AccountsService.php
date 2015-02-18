@@ -69,12 +69,17 @@ class AccountsService
      * @param string $serviceName
      * @return \Google_Auth_AssertionCredentials
      */
-    public function createCredentialsFor($serviceName)
+    public function createCredentialsFor($scopeNames)
     {
-        $cred = new \Google_Auth_AssertionCredentials($this->config['ServiceID'],
-            array(
-                sprintf('https://www.googleapis.com/auth/%s', $serviceName)
-            ), $this->getKey());
+        $scopeNames = (array) $scopeNames;
+        $scopes = array_map(function ($el)
+        {
+            return sprintf('https://www.googleapis.com/auth/%s', $el);
+        }, $scopeNames);
+        $cred = new \Google_Auth_AssertionCredentials($this->config['ServiceID'], $scopes, $this->getKey());
+        if ($this->config['admin']) {
+            $cred->sub = $this->config['admin'];
+        }
         return $cred;
     }
 
