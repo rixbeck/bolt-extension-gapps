@@ -10,7 +10,7 @@ accounts:
     KeyFile: "BRKE testbase-946e4e733916.p12"
     admin: administrator@brke.org
 
-modules: [ calendar, directory.groups ]
+modules: [ calendar, directory.groups, extender ]
 
 calendar:
   unnepek:
@@ -35,3 +35,4 @@ directory:
 
 recordtypes:
   simple: description,nextPageToken,nextSyncToken,summary,items(location,created,description,kind,originalStartTime,recurrence,source,start,status,summary)
+
