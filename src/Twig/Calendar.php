@@ -8,27 +8,8 @@ use Bolt\Extension\Rixbeck\Gapps\Recurrences;
 use Bolt\Extension\Rixbeck\Gapps\Iterator\PagingEventsIterator;
 use Bolt\Extension\Rixbeck\Gapps\EventMatrix;
 
-class Calendar extends \Twig_Extension
+class Calendar extends BaseExtension
 {
-
-    protected $app;
-
-    protected $functions;
-
-    // put default functions here which must work on both backend and frontend
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-        $this->functions = $this->createFunctions();
-    }
-
-    protected function createFunctions()
-    {
-        $whichend = $this->app['config']->getWhichEnd();
-        $functions = sprintf('%sFunctions', $whichend);
-
-        return $this->$functions();
-    }
 
     protected function frontendFunctions()
     {
@@ -37,21 +18,6 @@ class Calendar extends \Twig_Extension
             'recurrences' => new \Twig_Function_Method($this, 'createRecurrence'),
             'eventmatrix' => new \Twig_Function_Method($this, 'createEventMatrix')
         );
-    }
-
-    protected function backendFunctions()
-    {
-        return array();
-    }
-
-    protected function asyncFunctions()
-    {
-        return array();
-    }
-
-    public function canAdd()
-    {
-        return !empty($this->functions);
     }
 
     public function getService($calendarName)
