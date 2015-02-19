@@ -11,17 +11,29 @@ class General extends \Twig_Extension
 
     protected $app;
 
+    protected $filters;
+
     // put default functions here which must work on both backend and frontend
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->filters = $this->createFilters();
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see Twig_Extension::getFilters()
-     */
     public function getFilters()
+    {
+        return $this->filters;
+    }
+
+    protected function createFilters()
+    {
+        $whichend = $this->app['config']->getWhichEnd();
+        $filters = sprintf('%sFilters', $whichend);
+
+        return $this->$filters();
+    }
+
+    protected function frontendFilters()
     {
         return array(
             new \Twig_SimpleFilter('localedate',
@@ -44,6 +56,21 @@ class General extends \Twig_Extension
                     'trim'
                 ))
         );
+    }
+
+    public function canAdd()
+    {
+        return !empty($this->filters);
+    }
+
+    protected function backendFilters()
+    {
+        return array();
+    }
+
+    protected function asyncFilters()
+    {
+        return array();
     }
 
     public function trim($string, $width, $marker = '…')

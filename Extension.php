@@ -40,11 +40,9 @@ class Extension extends BaseExtension
 
     protected function initializeTwig($module)
     {
-        if ($this->app['config']->getWhichEnd() == 'frontend') {
-            $twigmodule = $this->createTwigModule($module);
-            if ($twigmodule) {
-                $this->app['twig']->addExtension($twigmodule);
-            }
+        $twigmodule = $this->createTwigModule($module);
+        if ($twigmodule && $twigmodule->canAdd()) {
+            $this->app['twig']->addExtension($twigmodule);
         }
     }
 
