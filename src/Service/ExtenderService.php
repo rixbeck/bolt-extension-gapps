@@ -4,6 +4,8 @@ namespace Bolt\Extension\Rixbeck\Gapps\Service;
 use Bolt\Extension\Bolt\BoltForms\Event\BoltFormsEvents;
 use Bolt\Extension\Bolt\BoltForms\Event\BoltFormsEvent;
 use utilphp\util;
+use Symfony\Component\Form\Form;
+use Bolt\Extension\Rixbeck\Gapps\Extension;
 
 class ExtenderService
 {
@@ -16,6 +18,8 @@ class ExtenderService
 
     protected $attributes;
 
+    protected $options;
+
     public function __construct($app, $formname)
     {
         $this->formName = $formname;
@@ -25,13 +29,24 @@ class ExtenderService
     public function attachForm($elements, $attributes)
     {
         $this->elementsFrom = $elements;
-        $this->attributes = $attributes;
+        $this->prepareOptions($attributes);
         $this->app['dispatcher']->addListener(
-            BoltFormsEvents::PRE_SET_DATA,
+            BoltFormsEvents::POST_SET_DATA,
             array(
                 $this,
                 'addElementsHandler'
             ));
+    }
+
+    public function prepareOptions($attributes)
+    {
+        if (! is_array($attributes)) {
+            $section = $attributes;
+            $attributes = $this->app[Extension::CONTAINER_ID]->getConfig('extender/' . $section);
+        }
+        $this->options = $attributes['options'];
+        unset($attributes['options']);
+        $this->attributes = $attributes;
     }
 
     public function addElementsHandler(BoltFormsEvent $event)
@@ -40,21 +55,48 @@ class ExtenderService
         $form = $event->getForm();
 
         if (! $product || null === $product->getId()) {
-            // $form->add('optional', 'checkbox');
-            $this->addFields($form);
+            /* @var $group \Symfony\Component\Form\FormBuilder */
+            // $group = $this->app['form.factory']->createNamedBuilder('Gyerekek', 'form', array('virtual'=>true,'auto_initialize'=>false));
+            // $form = $group->getForm();
+            $sub = $this->addFields($form);
+            // $form->add($sub);
         }
     }
 
-    protected function addFields($form)
+    protected function addFields(Form $form)
     {
         foreach ($this->elementsFrom as $element) {
-            $name = $this->makeFieldname($element[$this->attributes['label']]);
-            $form->add($name, $this->attributes['type']);
+            $options = $this->createOptionsFor($element);
+            $name = 'xtend_' . $this->encodeFieldname($options['label']);
+            $form->add($name, $this->attributes['type'], $options);
         }
+
+        return $form;
     }
 
-    protected  function makeFieldname($name)
+    protected function encodeFieldname($name)
     {
-        return preg_replace('/[^[:alnum:]]+/im', '_', $name);
+        $name = bin2hex($name);
+        return $name;
+    }
+
+    protected function getElementAttribute($element, $attributeName)
+    {
+        $value = $this->options[$attributeName];
+        if ($value[0] == '@') {
+            return $element[substr($value, 1)];
+        }
+
+        return $value;
+    }
+
+    protected function createOptionsFor($element)
+    {
+        $options = array();
+        foreach ($this->options as $key => $option) {
+            $options[$key] = $this->getElementAttribute($element, $key);
+        }
+
+        return $options;
     }
 }
