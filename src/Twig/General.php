@@ -5,11 +5,12 @@ use Bolt\Application;
 use Bolt\Extension\Rixbeck\Gapps\Provider\CalendarServiceProvider;
 use Bolt\Extension\Rixbeck\Gapps\Extension;
 use Bolt\Extension\Rixbeck\Gapps\RomanNumbers;
+use Symfony\Component\Finder\Finder;
 
 class General extends BaseExtension
 {
 
-   protected function frontendFilters()
+    protected function frontendFilters()
     {
         return array(
             new \Twig_SimpleFilter('localedate',
@@ -30,6 +31,21 @@ class General extends BaseExtension
                 array(
                     $this,
                     'trim'
+                ))
+        );
+    }
+
+    /*
+     * (non-PHPdoc)
+     * @see \Bolt\Extension\Rixbeck\Gapps\Twig\BaseExtension::frontendFunctions()
+     */
+    protected function frontendFunctions()
+    {
+        return array(
+            new \Twig_SimpleFunction('randomfile',
+                array(
+                    $this,
+                    'randomFile'
                 ))
         );
     }
@@ -57,6 +73,20 @@ class General extends BaseExtension
         }
 
         return strftime($format, $date->getTimestamp());
+    }
+
+    public function randomFile($from = '')
+    {
+        $infolder = $this->app['resources']->getPath('files') . '/' . $from;
+        $finder = new Finder();
+        $finder->files()->in($infolder);
+        $files = iterator_to_array($finder);
+
+        $idx = rand(0, count($files)-1);
+        $file = array_values($files)[$idx];
+        $filename = $from . '/' . $file->getFilename();
+
+        return $filename;
     }
 
     public function getName()
