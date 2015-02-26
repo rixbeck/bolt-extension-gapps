@@ -24,6 +24,18 @@ class Extender extends BaseExtension
         );
     }
 
+    protected function frontendFunctions()
+    {
+        return array(new \Twig_SimpleFunction('decodefieldname', array($this, 'decodefieldname')));
+    }
+
+    public function decodeFieldname($field)
+    {
+        $extender = $this->getService();
+
+        return $extender->decodeFieldname($field);
+    }
+
     /*public function getService($formname)
     {
         if (array_key_exists($formname, $this->instances)) {
@@ -32,7 +44,7 @@ class Extender extends BaseExtension
 
         return $this->instances[$formname] = new ExtenderService($this->app, $formname);
     }*/
-    public function getService($formname)
+    public function getService($formname = '')
     {
         return new ExtenderService($this->app, $formname);
     }
