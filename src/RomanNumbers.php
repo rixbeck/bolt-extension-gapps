@@ -73,7 +73,7 @@ class RomanNumbers
         $str = strrev((string) $this->value);
         $value = '';
         for ($i = 0; $i < strlen($str); $i ++) {
-            $value .= $this->digits[$i][$str[$i]];
+            $value = $this->digits[$i][$str[$i]] . $value;
         }
 
         return $value;
