@@ -38,7 +38,7 @@ class GroupsService extends BaseService
     public function groupList($options = array())
     {
         $options['domain'] = $this->config['domain'];
-        $options = $this->prepareOptions($options);
+        $options = $this->prepareOptions(strtolower(__FUNCTION__), $options);
 
         return $this->groups = new PagingGroupsIterator($this->service->groups, $options);
     }

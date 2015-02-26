@@ -59,7 +59,7 @@ abstract class BaseService
 
     public function initialize()
     {
-        $this->initializeDefaultOptions();
+        // $this->initializeDefaultOptions();
 
         if (! $this->service) {
             $this->account = $this->app[Extension::getProviderId('accounts')][$this->accountName];
@@ -71,17 +71,23 @@ abstract class BaseService
         return $this->service;
     }
 
-    protected function initializeDefaultOptions($defaults = array())
+    protected function initializeDefaultOptions($method = '')
     {
-        $etype = $this->app[Extension::CONTAINER_ID]->getConfig()['recordtypes'];
-        if ($this->config['recordtype'] !== 'full') {
-            $recordtype = RecordType::decode($etype[$this->config['recordtype']]);
+        $this->recordType = array();
+        /* @var $ext \Bolt\Extension\Rixbeck\Gapps\Extension */
+        $ext = $this->app[Extension::CONTAINER_ID];
+        $etype = $ext->getConfig('recordtypes');
+        $section = implode('/', array($this->serviceName, $this->name, 'recordtype', $method));
+        $value = $ext->getConfig($section) ?: 'full';
+        if ($value !== 'full') {
+            $recordtype = RecordType::decode($etype[$value]);
             $this->recordType = $recordtype ?  : $this->recordType;
         }
     }
 
-    protected function prepareOptions($options = array())
+    protected function prepareOptions($methodfor, $options = array())
     {
+        $this->initializeDefaultOptions($methodfor);
         if (! empty($options)) {
             if (key_exists('fields', $options)) {
                 $fields = $this->recordType;

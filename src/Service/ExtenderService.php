@@ -20,7 +20,7 @@ class ExtenderService
 
     protected $options;
 
-    public function __construct($app, $formname)
+    public function __construct($app, $formname = '')
     {
         $this->formName = $formname;
         $this->app = $app;
@@ -67,16 +67,22 @@ class ExtenderService
     {
         foreach ($this->elementsFrom as $element) {
             $options = $this->createOptionsFor($element);
-            $name = 'xtend_' . $this->encodeFieldname($options['label']);
+            $name = $this->encodeFieldname($options['label']);
             $form->add($name, $this->attributes['type'], $options);
         }
 
         return $form;
     }
 
-    protected function encodeFieldname($name)
+    public function encodeFieldname($name)
     {
-        $name = bin2hex($name);
+        $name = 'xtend_' . bin2hex($name);
+        return $name;
+    }
+
+    public function decodeFieldname($name)
+    {
+        $name = hex2bin(substr($name, 6));
         return $name;
     }
 

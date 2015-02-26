@@ -47,10 +47,6 @@ class CalendarBaseService extends BaseService
             )
         );
 
-        $this->defaultOptions = array(
-            'singleEvents' => true
-        );
-
         return parent::initialize();
     }
 
@@ -65,7 +61,11 @@ class CalendarBaseService extends BaseService
 
     public function eventList($options = array())
     {
-        $options = $this->prepareOptions($options);
+        $this->defaultOptions = array(
+            'singleEvents' => true
+        );
+
+        $options = $this->prepareOptions(strtolower(__FUNCTION__), $options);
 
         return $this->events = new PagingEventsIterator($this->service->events, $this->config['CalendarID'], $options);
     }
@@ -96,5 +96,17 @@ class CalendarBaseService extends BaseService
         );
 
         return $this->eventList($options);
+    }
+
+    public function getEvent($id, $options = array())
+    {
+        $this->defaultOptions = array();
+
+        $options = $this->prepareOptions(strtolower(__FUNCTION__), $options);
+        /* @var $evt \Google_Service_Calendar_Events_Resource */
+        $evt = $this->service->events;
+        $event = $evt->get($this->config['CalendarID'], $id, $options);
+
+        return $event;
     }
 }
