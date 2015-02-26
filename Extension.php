@@ -32,13 +32,13 @@ class Extension extends BaseExtension
         $modules = array_merge($modules, $this->config['modules']);
         foreach ($modules as $module) {
             $this->initializeProvider($module);
-            $this->initializeTwig($module);
+            $this->initializeTwigModule($module);
         }
 
-        $this->initializeTwig('general');
+        $this->initializeTwigModule('general');
     }
 
-    protected function initializeTwig($module)
+    protected function initializeTwigModule($module)
     {
         $twigmodule = $this->createTwigModule($module);
         if ($twigmodule && $twigmodule->canAdd()) {
