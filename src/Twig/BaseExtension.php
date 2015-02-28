@@ -80,4 +80,15 @@ abstract class BaseExtension extends \Twig_Extension
     {
         return array();
     }
+
+    protected function cliFunctions()
+    {
+        return array();
+    }
+
+    protected function cliFilters()
+    {
+        return array();
+    }
+
 }
