@@ -3,6 +3,13 @@ namespace Bolt\Extension\Rixbeck\Gapps;
 
 use Bolt\BaseExtension;
 
+/**
+ * This extension initializes its modules as services under $app container.
+ *
+ * @author Rix Beck <rix at neologik.hu>
+ * Copyright 2015
+ *
+ */
 class Extension extends BaseExtension
 {
 
@@ -24,6 +31,9 @@ class Extension extends BaseExtension
         $this->config = $this->app[self::CONTAINER_ID]->getConfig();
     }
 
+    /**
+     * Initializes service providers, twig extensions by module definition
+     */
     protected function initializeModules()
     {
         $modules = array(
@@ -38,6 +48,10 @@ class Extension extends BaseExtension
         $this->initializeTwigModule('general');
     }
 
+    /**
+     * Initializes a twig module
+     * @param unknown $module
+     */
     protected function initializeTwigModule($module)
     {
         $twigmodule = $this->createTwigModule($module);
@@ -46,6 +60,11 @@ class Extension extends BaseExtension
         }
     }
 
+    /**
+     * Creates the twig module
+     * @param unknown $modulename
+     * @return unknown|boolean
+     */
     protected function createTwigModule($modulename)
     {
         $classpath = $this->moduleToClassname($modulename);
@@ -58,6 +77,10 @@ class Extension extends BaseExtension
         return false;
     }
 
+    /**
+     * Service provider initializer for module
+     * @param unknown $module
+     */
     protected function initializeProvider($module)
     {
         $classpath = $this->moduleToClassname($module);

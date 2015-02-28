@@ -1,4 +1,8 @@
+# Google accounts definition section.
+# Accissing api calls you must refeer to one of these accounts to auth the requests.
+# KeyFiles must be included in config/extensions folder.
 accounts:
+# Name of this account
   testdrive:
     ServiceID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t@developer.gserviceaccount.com
     ClientID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t.apps.googleusercontent.com
@@ -8,31 +12,46 @@ accounts:
     ServiceID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t@developer.gserviceaccount.com
     ClientID: 120982803578-h9qva4fcsokk2f600gaokql4bbi9nr8t.apps.googleusercontent.com
     KeyFile: "BRKE testbase-946e4e733916.p12"
+# admin sdk call requires the user who's identity will be used in a request
     admin: administrator@brke.org
 
+# modules to be used
 modules: [ calendar, directory.groups, extender ]
 
+# Calendar services definitions
 calendar:
+# Name of a calendar to be used in a service
   unnepek:
+# Accaount section name will be used in request
     account: testdrive
+# Which calendar to be used
     CalendarID: brke.org_km782pr76u1l5040got5vprb4g@group.calendar.google.com
+# Record type used in response
     recordtype: simple
+
   esemenyek:
     account:  testdrive
     CalendarID: brke.org_lsec7eqblho8ejstn7tc4mpi3s@group.calendar.google.com
     recordtype: simple
+
   miserend:
     account: testdrive
     CalendarID: brke.org_b1ht4n8nncjlk77lfqhsr2dh50@group.calendar.google.com
     recordtype: full
 
+# Directory service definitions
 directory:
+# Groups accessing section
   groups:
     egyhazkozseg:
       account: adminsdk
+# Which domain groups to be listed
       domain: egyhazkozseg.brke.org
       recordtype: full
 
+# Response record types
+# With narrowing size of record types you may reduce response data size
+# Refer services' 'recordtype' section the necessary record type or use 'full' for a detailed response
 recordtypes:
   simple: description,nextPageToken,nextSyncToken,summary,items(location,created,description,kind,originalStartTime,recurrence,source,start,status,summary)
 

@@ -5,6 +5,15 @@ use Bolt\Application;
 use Bolt\Extension\Rixbeck\Gapps\Extension;
 use Bolt\Extension\Rixbeck\Gapps\Exception\AccountServiceException;
 
+/**
+ * Account service for google apps service calls.
+ * In config.yml you may define an account section which must be referred by services.
+ * See config.yml.dist for sample.
+ *
+ * @author Rix Beck <rix at neologik.hu>
+ * Copyright 2015
+ *
+ */
 class AccountsService
 {
 
