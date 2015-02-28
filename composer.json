@@ -10,11 +10,13 @@
 				"src"
 			]
 		},
-		"classmap": [ "lib/When-0.3/" ]
+		"classmap" : [
+			"lib/When-0.3/"
+		]
 	},
 	"name" : "rixbeck/gapps",
 	"type" : "bolt-extension",
-	"license" : "proprietary",
+	"license" : "GPL-3.0+",
 	"require" : {
 		"bolt/bolt" : ">=2.0.0,<3.0.0",
 		"php" : ">=5.3"
