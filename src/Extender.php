@@ -1,36 +1,32 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Service;
+/**
+ * @author Rix Beck <rix@neologik.hu>
+ */
+
+namespace Bolt\Extension\Rixbeck\Gapps;
 
 use Bolt\Extension\Bolt\BoltForms\Event\BoltFormsEvents;
-use Bolt\Extension\Bolt\BoltForms\Event\BoltFormsEvent;
-use utilphp\util;
-use Symfony\Component\Form\Form;
-use Bolt\Extension\Rixbeck\Gapps\Extension;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class ExtenderService
+class Extender
 {
-
-    protected $app;
-
     protected $formName;
-
     protected $elementsFrom;
-
     protected $attributes;
-
     protected $options;
+    protected $dispatcher;
 
-    public function __construct($app, $formname = '')
+    public function __construct(EventDispatcherInterface $dispatcher, $formname = '')
     {
         $this->formName = $formname;
-        $this->app = $app;
+        $this->dispatcher = $dispatcher;
     }
 
     public function attachForm($elements, $attributes)
     {
         $this->elementsFrom = $elements;
         $this->prepareOptions($attributes);
-        $this->app['dispatcher']->addListener(
+        $this->dispatcher->addListener(
             BoltFormsEvents::POST_SET_DATA,
             array(
                 $this,
@@ -40,10 +36,6 @@ class ExtenderService
 
     public function prepareOptions($attributes)
     {
-        if (! is_array($attributes)) {
-            $section = $attributes;
-            $attributes = $this->app[Extension::CONTAINER_ID]->getConfig('extender/' . $section);
-        }
         $this->options = $attributes['options'];
         unset($attributes['options']);
         $this->attributes = $attributes;
@@ -54,13 +46,25 @@ class ExtenderService
         $product = $event->getData();
         $form = $event->getForm();
 
-        if (! $product || null === $product->getId()) {
+        if (!$product || null === $product->getId()) {
             /* @var $group \Symfony\Component\Form\FormBuilder */
             // $group = $this->app['form.factory']->createNamedBuilder('Gyerekek', 'form', array('virtual'=>true,'auto_initialize'=>false));
             // $form = $group->getForm();
             $sub = $this->addFields($form);
             // $form->add($sub);
         }
+    }
+
+    public function encodeFieldname($name)
+    {
+        $name = 'xtend_'.bin2hex($name);
+        return $name;
+    }
+
+    public function decodeFieldname($name)
+    {
+        $name = hex2bin(substr($name, 6));
+        return $name;
     }
 
     protected function addFields(Form $form)
@@ -72,18 +76,6 @@ class ExtenderService
         }
 
         return $form;
-    }
-
-    public function encodeFieldname($name)
-    {
-        $name = 'xtend_' . bin2hex($name);
-        return $name;
-    }
-
-    public function decodeFieldname($name)
-    {
-        $name = hex2bin(substr($name, 6));
-        return $name;
     }
 
     protected function getElementAttribute($element, $attributeName)

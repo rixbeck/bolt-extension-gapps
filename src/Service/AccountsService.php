@@ -14,7 +14,7 @@ use Bolt\Extension\Rixbeck\Gapps\Exception\AccountServiceException;
  * Copyright 2015
  *
  */
-class AccountsService
+class AccountsService implements AccountsAwareInterface
 {
 
     protected $app;
@@ -28,33 +28,31 @@ class AccountsService
     protected $key;
 
     protected $serviceId;
+    private $appId;
 
     /**
      * Instance of an gapps account for using api
      *
-     * @param Application $app
+     * @param array $config
+     * @param $appId
      * @param string $accountId
      */
-    public function __construct(Application $app, $accountId)
+    public function __construct(array $config, $appId, $accountId = '')
     {
-        $this->app = $app;
-        $config = $this->app[Extension::CONTAINER_ID]->getConfig()['accounts'];
-        $this->config = $config[$accountId];
+        $this->config = $config;
         $this->accountId = $accountId;
-        $this->serviceId = $this->config['ServiceID'];
+        $this->appId = $appId;
     }
 
     /**
      * Authorize API with credentials
-     *
      * @param \Google_Auth_AssertionCredentials $cred
+     * @return \Google_Client
      */
     public function authenticate(\Google_Auth_AssertionCredentials $cred)
     {
         $this->client = $client = new \Google_Client();
-        $sitename = $this->app['config']->get('general/sitename');
-        // @todo url::slugify() will be deprecated in 2.1
-        $this->client->setApplicationName(\utilphp\util::slugify($sitename));
+        $this->client->setApplicationName($this->appId);
 
         if (isset($_SESSION['token_gapps'])) {
             $client->setAccessToken($_SESSION['token_gapps']);
@@ -77,6 +75,7 @@ class AccountsService
      *
      * @param string $serviceName
      * @return \Google_Auth_AssertionCredentials
+     * @throws AccountServiceException
      */
     public function createCredentialsFor($scopeNames)
     {

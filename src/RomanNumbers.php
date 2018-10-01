@@ -1,13 +1,12 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps;
 
-use Sirius\Validation\Rule\Length;
+namespace Bolt\Extension\Rixbeck\Gapps;
 
 class RomanNumbers
 {
 
-    protected $digits = array(
-        array(
+    protected $digits = [
+        [
             '',
             'i',
             'ii',
@@ -18,8 +17,8 @@ class RomanNumbers
             'vii',
             'viii',
             'ix'
-        ),
-        array(
+        ],
+        [
             '',
             'x',
             'xx',
@@ -30,8 +29,8 @@ class RomanNumbers
             'lxx',
             'lxxx',
             'xc'
-        ),
-        array(
+        ],
+        [
             '',
             'c',
             'cc',
@@ -42,8 +41,8 @@ class RomanNumbers
             'dcc',
             'dccc',
             'dm'
-        ),
-        array(
+        ],
+        [
             '',
             'm',
             'mm',
@@ -54,17 +53,17 @@ class RomanNumbers
             'VII',
             'VIII',
             'X'
-        )
-    );
+        ]
+    ];
 
     protected $value;
 
-    public function __construct($number)
+    public function __construct($number = 0)
     {
         $this->value = $number;
     }
 
-    public function convert()
+    public function roman()
     {
         if ($this->value > 10000) {
             return false;
@@ -72,15 +71,29 @@ class RomanNumbers
 
         $str = strrev((string) $this->value);
         $value = '';
-        for ($i = 0; $i < strlen($str); $i ++) {
-            $value = $this->digits[$i][$str[$i]] . $value;
+        for ($i = 0; $i < strlen($str); $i++) {
+            $value = $this->digits[$i][$str[$i]].$value;
         }
 
         return $value;
     }
 
+    public function getValue()
+    {
+        return $this->value;
+    }
+
     public function __toString()
     {
-        return $this->convert();
+        return $this->roman();
+    }
+
+    public function __invoke($number = 0)
+    {
+        if (is_int($number)) {
+            $this->value = $number;
+        }
+
+        return $this->roman();
     }
 }

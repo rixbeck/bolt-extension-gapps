@@ -47,22 +47,17 @@ abstract class BaseService
 
     abstract protected function createService($client);
 
-    public function __construct(Application $app, $name, $sectionname)
+    public function __construct(AccountsAwareInterface $account, array $config)
     {
-        // @todo implement config check
-        $this->app = $app;
-        $config = $this->app[Extension::CONTAINER_ID]->getConfig($sectionname, '.');
-        $this->config = $config[$this->name = $name];
+        $this->account = $account;
+        $this->config = $config;
         $this->accountName = $this->config['account'];
-        $this->serviceName = $this->createScopes($sectionname);
+        $this->serviceName = $this->createScopes();
     }
 
     public function initialize()
     {
-        // $this->initializeDefaultOptions();
-
         if (! $this->service) {
-            $this->account = $this->app[Extension::getProviderId('accounts')][$this->accountName];
             $cred = $this->account->createCredentialsFor($this->serviceName);
             $client = $this->account->authenticate($cred);
             $this->createService($client);
@@ -74,7 +69,6 @@ abstract class BaseService
     protected function initializeDefaultOptions($method = '')
     {
         $this->recordType = array();
-        /* @var $ext \Bolt\Extension\Rixbeck\Gapps\Extension */
         $ext = $this->app[Extension::CONTAINER_ID];
         $etype = $ext->getConfig('recordtypes');
         $section = implode('/', array($this->serviceName, $this->name, 'recordtype', $method));
@@ -105,9 +99,9 @@ abstract class BaseService
         return $options;
     }
 
-    protected function createScopes($section)
+    protected function createScopes()
     {
-        return explode('.', $section)[0];
+        return explode('.', $this->serviceName)[0];
     }
 
     public function getService()

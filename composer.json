@@ -1,38 +1,39 @@
 {
-	"autoload" : {
-		"files" : [
-			"init.php",
-			"lib\\apiclient-1.1.2\\autoload.php"
-		],
-		"psr-4" : {
-			"Bolt\\Extension\\Rixbeck\\Gapps\\" : [
-				"",
-				"src"
-			]
-		},
-		"classmap" : [
-			"lib/When-0.3/"
-		]
-	},
-	"name" : "rixbeck/gapps",
-	"type" : "bolt-extension",
-	"license" : "GPL-3.0+",
-	"require" : {
-		"bolt/bolt" : ">=2.0.0,<3.0.0",
-		"php" : ">=5.3"
-	},
-	"require-dev" : {
-		"rixbeck/bolt-tasks" : "dev-master"
-	},
-	"repositories" : [{
-			"type" : "vcs",
-			"url" : "https://github.com/rixbeck/bolt-tasks.git"
-		}
-	],
-	"extra" : {
-		"branch-alias" : {
-			"dev-master" : "0.1.*-dev"
-		}
-	},
-	"minimum-stability" : "dev"
+  "name": "rixbeck/gapps",
+  "type": "bolt-extension",
+  "description": "Google Suite addins",
+  "license": "GPL-3.0+",
+  "keywords": [
+    "Google",
+    "G-Suite",
+    "Google Api"
+  ],
+  "require": {
+    "bolt/bolt": "^3.0",
+    "ext-mbstring": "*",
+    "google/apiclient": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.7"
+  },
+  "authors": [
+    {
+      "name": "Rix Beck",
+      "email": "rix@boltcms.hu"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Bolt\\Extension\\RixBeck\\Gapps\\": "src"
+    },
+    "classmap": [
+      "lib/When-0.3/"
+    ]
+  },
+  "extra": {
+    "bolt-assets": "web",
+    "bolt-class": "Bolt\\Extension\\RixBeck\\Gapps\\GappsExtension"
+  }
 }

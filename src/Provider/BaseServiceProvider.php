@@ -10,23 +10,18 @@ abstract class BaseServiceProvider implements ServiceProviderInterface
 {
 
     protected $className;
-
-    protected $providerId;
-
     protected $sectionId;
 
-    public function __construct($className = null)
+    public function __construct()
     {
-        $this->sectionId = implode('.', array_map('lcfirst', explode('\\', $className)));
-        if ($className) {
-            $this->className = $this->serviceFQName($className);
-        }
+        $this->className = static::class;
+        $this->sectionId = implode('.', array_map('lcfirst', explode('\\', $this->className)));
     }
 
     public function register(Application $app)
     {
         $self = $this;
-        $app[Extension::getProviderId($this->sectionId)] = $app->share(
+        $app[] = $app->share(
             function ($app) use($self)
             {
                 $config = $app[Extension::CONTAINER_ID]->getConfig($self->sectionId, '.');
@@ -50,10 +45,4 @@ abstract class BaseServiceProvider implements ServiceProviderInterface
     public function boot(Application $app)
     {
     }
-
-    protected function serviceFQName($classname)
-    {
-        return sprintf('\\Bolt\\Extension\\Rixbeck\\Gapps\\Service\\%sService', ucfirst($classname));
-    }
-
 }

@@ -12,11 +12,6 @@ class GroupsService extends BaseService
 
     public $groups;
 
-    public function __construct(Application $app, $name)
-    {
-        parent::__construct($app, $name, 'directory.groups');
-    }
-
     public function initialize()
     {
         $this->recordType = array();
@@ -47,7 +42,7 @@ class GroupsService extends BaseService
      * (non-PHPdoc)
      * @see \Bolt\Extension\Rixbeck\Gapps\Service\BaseService::createServiceName()
      */
-    protected function createScopes($section)
+    protected function createScopes()
     {
         return array(
             'admin.directory.group'
