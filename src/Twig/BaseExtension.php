@@ -1,11 +1,10 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Twig;
+namespace Bolt\Extension\RixBeck\Gapps\Twig;
 
 use Bolt\Application;
 
 abstract class BaseExtension extends \Twig_Extension
 {
-
     protected $app;
 
     protected $functions;

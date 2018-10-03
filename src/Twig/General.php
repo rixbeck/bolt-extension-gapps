@@ -1,8 +1,8 @@
 <?php
 
-namespace Bolt\Extension\Rixbeck\Gapps\Twig;
+namespace Bolt\Extension\RixBeck\Gapps\Twig;
 
-use Bolt\Extension\Rixbeck\Gapps\RomanNumbers;
+use Bolt\Extension\RixBeck\Gapps\RomanNumbers;
 use Symfony\Component\Finder\Finder;
 
 class General
@@ -51,7 +51,7 @@ class General
 
     /*
      * (non-PHPdoc)
-     * @see \Bolt\Extension\Rixbeck\Gapps\Twig\BaseExtension::frontendFunctions()
+     * @see \Bolt\Extension\RixBeck\Gapps\Twig\BaseExtension::frontendFunctions()
      */
 
     public function trim($string, $width, $marker = '…')

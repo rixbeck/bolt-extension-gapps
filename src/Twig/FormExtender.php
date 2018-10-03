@@ -1,8 +1,8 @@
 <?php
 
-namespace Bolt\Extension\Rixbeck\Gapps\Twig;
+namespace Bolt\Extension\RixBeck\Gapps\Twig;
 
-use Bolt\Extension\Rixbeck\Gapps\Iterator\BasePagingIterator;
+use Bolt\Extension\RixBeck\Gapps\Iterator\BasePagingIterator;
 
 class FormExtender
 {

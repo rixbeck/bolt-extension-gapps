@@ -1,21 +1,22 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Service;
 
-use Bolt\Application;
-use Bolt\Extension\Rixbeck\Gapps\Extension;
-use Bolt\Extension\Rixbeck\Gapps\Iterator\PagingEventsIterator;
-use Bolt\Extension\Rixbeck\Gapps\RecordType;
+namespace Bolt\Extension\RixBeck\Gapps\Service;
+
+use Bolt\Extension\RixBeck\Gapps\Iterator\PagingEventsIterator;
 
 /**
  *
  * @author Rix Beck <rix at neologik.hu>
  *         Copyright 2015
  *
- * @property \Bolt\Extension\Rixbeck\Gapps\Service\AccountsService $account
+ * @property \Bolt\Extension\RixBeck\Gapps\Service\AccountsService $account
+ * @property \Google_Service_Calendar $service
  */
 class CalendarService extends BaseService
 {
-
+    /**
+     * @var PagingEventsIterator
+     */
     protected $events;
 
     public function test()
@@ -25,6 +26,8 @@ class CalendarService extends BaseService
 
     public function initialize()
     {
+        parent::initialize();
+
         $this->recordType = array(
             'description',
             'nextSyncToken',
@@ -41,18 +44,15 @@ class CalendarService extends BaseService
                 'summary'
             )
         );
+        ($this->account->getClient())->addScope(\Google_Service_Calendar::CALENDAR);
 
-        return parent::initialize();
+        return $this->service;
     }
 
     /*
      * (non-PHPdoc)
-     * @see \Bolt\Extension\Rixbeck\Gapps\Service\BaseService::createService()
+     * @see \Bolt\Extension\RixBeck\Gapps\Service\BaseService::createService()
      */
-    protected function createService($client)
-    {
-        $this->service = new \Google_Service_Calendar($client);
-    }
 
     public function eventList($options = array())
     {
@@ -61,8 +61,9 @@ class CalendarService extends BaseService
         );
 
         $options = $this->prepareOptions(strtolower(__FUNCTION__), $options);
+        $calId = $this->config['CalendarID'];
 
-        return $this->events = new PagingEventsIterator($this->service->events, $this->config['CalendarID'], $options);
+        return $this->events = (new PagingEventsIterator($this->service->events, $options))->setCalendarId($calId);
     }
 
     public function info()
@@ -98,10 +99,14 @@ class CalendarService extends BaseService
         $this->defaultOptions = array();
 
         $options = $this->prepareOptions(strtolower(__FUNCTION__), $options);
-        /* @var $evt \Google_Service_Calendar_Events_Resource */
         $evt = $this->service->events;
         $event = $evt->get($this->config['CalendarID'], $id, $options);
 
         return $event;
+    }
+
+    protected function createService($client)
+    {
+        $this->service = new \Google_Service_Calendar($client);
     }
 }

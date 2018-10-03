@@ -1,9 +1,9 @@
 <?php
 
-namespace Bolt\Extension\Rixbeck\Gapps\Provider;
+namespace Bolt\Extension\RixBeck\Gapps\Provider;
 
 use Bolt\Collection\Arr;
-use Bolt\Extension\Rixbeck\Gapps\Service\AccountsService;
+use Bolt\Extension\RixBeck\Gapps\Service\AccountsService;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 

@@ -1,9 +1,8 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Iterator;
+namespace Bolt\Extension\RixBeck\Gapps\Iterator;
 
 abstract class BasePagingIterator implements \Iterator, \ArrayAccess
 {
-
     protected $resource;
 
     protected $options;

@@ -1,23 +1,26 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Iterator;
+namespace Bolt\Extension\RixBeck\Gapps\Iterator;
 
 /**
  *
  * @author Rix Beck <rix at neologik.hu>
  *         Copyright 2015
  *
- * @property \Google_Service_Calendar_Events_Resource $resource
- * @property \Google_Service_Calendar_Events $collection
+ * @property \Google_Service_Calendar_Resource_Events $resource
  */
 class PagingEventsIterator extends BasePagingIterator
 {
-
     protected $calendarId;
 
-    public function __construct(\Google_Service_Calendar_Events_Resource $events, $calendarId, $options = array())
+    /**
+     * @param mixed $calendarId
+     * @return PagingEventsIterator
+     */
+    public function setCalendarId($calendarId)
     {
-        parent::__construct($events, $options);
         $this->calendarId = $calendarId;
+
+        return $this;
     }
 
     public function fetch()

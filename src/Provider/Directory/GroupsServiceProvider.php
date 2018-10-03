@@ -1,8 +1,8 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Provider\Directory;
+namespace Bolt\Extension\RixBeck\Gapps\Provider\Directory;
 
-use Bolt\Extension\Rixbeck\Gapps\Service\CalendarService;
-use Bolt\Extension\Rixbeck\Gapps\Provider\BaseServiceProvider;
+use Bolt\Extension\RixBeck\Gapps\Service\CalendarService;
+use Bolt\Extension\RixBeck\Gapps\Provider\BaseServiceProvider;
 
 class GroupsServiceProvider extends BaseServiceProvider
 {

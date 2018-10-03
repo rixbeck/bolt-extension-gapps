@@ -1,10 +1,10 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Provider;
+namespace Bolt\Extension\RixBeck\Gapps\Provider;
 
-use Bolt\Extension\Rixbeck\Gapps\Extension;
+use Bolt\Extension\RixBeck\Gapps\Extension;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Bolt\Extension\Rixbeck\Gapps\Service\CalendarService;
+use Bolt\Extension\RixBeck\Gapps\Service\CalendarService;
 
 abstract class BaseServiceProvider implements ServiceProviderInterface
 {

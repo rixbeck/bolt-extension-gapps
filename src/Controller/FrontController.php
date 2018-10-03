@@ -1,9 +1,9 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Controller;
+namespace Bolt\Extension\RixBeck\Gapps\Controller;
 
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Bolt\Extension\Rixbeck\Gapps\Extension;
+use Bolt\Extension\RixBeck\Gapps\Extension;
 
 class FrontController
 {
@@ -22,7 +22,7 @@ class FrontController
      * Sample definition could be:
      * event:
      *   path: /event/{calname}/{eventid}
-     *   defaults: { _controller: 'Bolt\Extension\Rixbeck\Gapps\Controller\FrontController::event', template: 'calendareventrecord.twig' }
+     *   defaults: { _controller: 'Bolt\Extension\RixBeck\Gapps\Controller\FrontController::event', template: 'calendareventrecord.twig' }
      *
      * @param Request $request
      * @param \Silex\Application $app
@@ -32,7 +32,7 @@ class FrontController
      */
     public static function event(Request $request, \Silex\Application $app, $calname, $eventid, $template = 'calendareventrecord.twig')
     {
-        /* @var $service \Bolt\Extension\Rixbeck\Gapps\Service\CalendarService */
+        /* @var $service \Bolt\Extension\RixBeck\Gapps\Service\CalendarService */
         $service = $app[Extension::getProviderId('calendar')][$calname];
         $service->initialize();
         $event = $service->getEvent($eventid);
@@ -48,7 +48,7 @@ class FrontController
      * Sample definition could be:
      * events:
      *   path: /event/{calname}
-     *   defaults: { _controller: 'Bolt\Extension\Rixbeck\Gapps\Controller\FrontController::events', template: 'calendarlisting.twig' }
+     *   defaults: { _controller: 'Bolt\Extension\RixBeck\Gapps\Controller\FrontController::events', template: 'calendarlisting.twig' }
      *
      * @param Request $request
      * @param \Silex\Application $app

@@ -3,7 +3,7 @@
  * @author Rix Beck <rix@neologik.hu>
  */
 
-namespace Bolt\Extension\Rixbeck\Gapps;
+namespace Bolt\Extension\RixBeck\Gapps;
 
 use Bolt\Extension\Bolt\BoltForms\Event\BoltFormsEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

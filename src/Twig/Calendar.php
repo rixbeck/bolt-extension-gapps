@@ -1,28 +1,25 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Twig;
+namespace Bolt\Extension\RixBeck\Gapps\Twig;
 
-use Bolt\Application;
-use Bolt\Extension\Rixbeck\Gapps\Provider\CalendarServiceProvider;
-use Bolt\Extension\Rixbeck\Gapps\Extension;
-use Bolt\Extension\Rixbeck\Gapps\Recurrences;
-use Bolt\Extension\Rixbeck\Gapps\Iterator\PagingEventsIterator;
-use Bolt\Extension\Rixbeck\Gapps\EventMatrix;
+use Bolt\Extension\RixBeck\Gapps\EventMatrix;
+use Bolt\Extension\RixBeck\Gapps\Iterator\PagingEventsIterator;
+use Bolt\Extension\RixBeck\Gapps\Recurrences;
 
-class Calendar extends BaseExtension
+class Calendar
 {
+    /**
+     * @var \Pimple
+     */
+    private $calServices;
 
-    protected function frontendFunctions()
+    public function __construct(\Pimple $calServices)
     {
-        return array(
-            'calendarevents' => new \Twig_Function_Method($this, 'getService'),
-            'recurrences' => new \Twig_Function_Method($this, 'createRecurrence'),
-            'eventmatrix' => new \Twig_Function_Method($this, 'createEventMatrix')
-        );
+        $this->calServices = $calServices;
     }
 
     public function getService($calendarName)
     {
-        $service = $this->app[Extension::getProviderId('calendar')][$calendarName];
+        $service = $this->calServices[$calendarName];
         $service->initialize();
 
         return $service;
@@ -38,10 +35,5 @@ class Calendar extends BaseExtension
         $matrix = new EventMatrix($events, $type);
 
         return $matrix->matrix;
-    }
-
-    public function getName()
-    {
-        return 'gapps.calendar';
     }
 }

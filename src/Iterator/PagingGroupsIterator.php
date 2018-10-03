@@ -1,23 +1,16 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Iterator;
+namespace Bolt\Extension\RixBeck\Gapps\Iterator;
 
 /**
  *
  * @author Rix Beck <rix at neologik.hu>
  *         Copyright 2015
  *
- * @property \Google_Service_Directory_Groups_Resource $resource
- * @property \Google_Service_Directory_Groups $collection
+ * @property \Google_Service_Directory_Resource_Groups $resource
  */
 class PagingGroupsIterator extends BasePagingIterator
 {
-
     protected $domain;
-
-    public function __construct(\Google_Service_Directory_Groups_Resource $resource, $options = array())
-    {
-        parent::__construct($resource, $options);
-    }
 
     public function fetch()
     {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Bolt\Extension\Rixbeck\Gapps;
+namespace Bolt\Extension\RixBeck\Gapps;
 
 use Bolt\Collection\Arr;
-use Bolt\Extension\Rixbeck\Gapps\Service\AccountsService;
-use Bolt\Extension\Rixbeck\Gapps\Service\CalendarService;
-use Bolt\Extension\Rixbeck\Gapps\Service\Directory\GroupsService;
-use Bolt\Extension\Rixbeck\Gapps\Twig\FormExtender;
-use Bolt\Extension\Rixbeck\Gapps\Twig\General;
+use Bolt\Extension\RixBeck\Gapps\Service\AccountsService;
+use Bolt\Extension\RixBeck\Gapps\Service\CalendarService;
+use Bolt\Extension\RixBeck\Gapps\Service\Directory\GroupsService;
+use Bolt\Extension\RixBeck\Gapps\Twig\Calendar;
+use Bolt\Extension\RixBeck\Gapps\Twig\Directory\Groups;
+use Bolt\Extension\RixBeck\Gapps\Twig\General;
 use Bolt\Extension\SimpleExtension;
-use Cocur\Slugify\Slugify;
 use Silex\Application;
 
 /**
@@ -27,11 +27,11 @@ class GappsExtension extends SimpleExtension
 
         $app['gapps.accounts'] = $app->share(function ($app) use ($accounts) {
             $config = $this->getConfig();
-            $appId = Slugify::create()->slugify($app['config']->get('general/sitename'));
+            $configDir = $app['path_resolver']->resolve('extensions_config');
 
             foreach ($config['accounts'] as $name => $account) {
-                $accounts[$name] = $accounts->share(function () use ($account, $appId, $name) {
-                    return new AccountsService($account, $appId, $name);
+                $accounts[$name] = $accounts->share(function () use ($configDir, $account, $name) {
+                    return new AccountsService($account, $name, $configDir);
                 });
             }
 
@@ -45,7 +45,7 @@ class GappsExtension extends SimpleExtension
                 $calendars[$name] = $calendars->share(function () use ($app, $name, $calendar) {
                     $accountId = $calendar['account'];
 
-                    return new CalendarService($app['gapps.accounts'][$accountId], $calendar);
+                    return new CalendarService($app['gapps.accounts'][$accountId], $calendar, $this->getConfig()['recordtypes']);
                 });
             }
 
@@ -53,13 +53,13 @@ class GappsExtension extends SimpleExtension
         });
 
         $groups = new \Pimple();
-        $app['gapps.directory.groups'] = $app->share(function (Application $app) use ($app, $groups) {
+        $app['gapps.directory.groups'] = $app->share(function ($app) use ($groups) {
             $config = Arr::get($this->getConfig(), 'directory/groups', []);
             foreach ($config as $name => $group) {
-                $groups[$name] = $groups->share(function (Application $groups) use ($app, $group) {
+                $groups[$name] = $groups->share(function ($groups) use ($app, $group) {
                     $accountId = $group['account'];
 
-                    return new GroupsService($app['gapps.accounts'][$accountId], $group);
+                    return new GroupsService($app['gapps.accounts'][$accountId], $group, $this->getConfig()['recordtypes']);
                 });
             }
 
@@ -69,20 +69,31 @@ class GappsExtension extends SimpleExtension
 
     protected function registerTwigFunctions()
     {
-        return (new General())->functions();
+        $app = $this->getContainer();
+        $general = new General();
+        $calendar = new Calendar($app['gapps.calendar']);
+        $dirGrups = new Groups($app['gapps.directory.groups']);
+
+        return [
+            'calendarevents' => [[$calendar, 'getService']],
+            'recurrences' => [[$calendar, 'createRecurrence']],
+            'eventmatrix' => [[$calendar, 'createEventMatrix']],
+
+            'randomfile' => [[$general, 'randomFile']],
+
+            'directorygroups' => [[$dirGrups, 'getService']],
+        ];
     }
 
     protected function registerTwigFilters()
     {
-        $app = $this->getContainer();
+        // $app = $this->getContainer();
+        $general = new General();
 
-        return (new FormExtender($app['formextender'], $this->getConfig()))->filters();
-    }
-
-    protected function getDefaultConfig()
-    {
         return [
-            'accounts'
+            'localedate' => [[$general, 'dateFormatFilter'], ['needs_environment' => true]],
+            'roman' => [[$general, 'romanNumberFilter'], ['needs_environment' => true]],
+            'wtrim' => [[$general, 'trim']],
         ];
     }
 }

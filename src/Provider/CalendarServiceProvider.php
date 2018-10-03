@@ -1,10 +1,16 @@
 <?php
 
-namespace Bolt\Extension\Rixbeck\Gapps\Provider;
+namespace Bolt\Extension\RixBeck\Gapps\Provider;
 
-use Bolt\Extension\Rixbeck\Gapps\Service\CalendarService;
+use Bolt\Extension\RixBeck\Gapps\Service\CalendarService;
 use Silex\ServiceProviderInterface;
 
+/**
+ * Class CalendarServiceProvider
+ *
+ * @author Rix Beck <rix@neologik.hu>
+ * @deprecated
+ */
 class CalendarServiceProvider implements ServiceProviderInterface
 {
     /**

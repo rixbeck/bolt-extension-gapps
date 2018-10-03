@@ -1,9 +1,8 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Service;
 
-use Bolt\Application;
-use Bolt\Extension\Rixbeck\Gapps\Extension;
-use Bolt\Extension\Rixbeck\Gapps\Exception\AccountServiceException;
+namespace Bolt\Extension\RixBeck\Gapps\Service;
+
+use Bolt\Extension\RixBeck\Gapps\Exception\AccountServiceException;
 
 /**
  * Account service for google apps service calls.
@@ -16,109 +15,83 @@ use Bolt\Extension\Rixbeck\Gapps\Exception\AccountServiceException;
  */
 class AccountsService implements AccountsAwareInterface
 {
-
     protected $app;
-
     protected $config;
-
     protected $accountId;
-
     protected $client;
-
-    protected $key;
-
-    protected $serviceId;
-    private $appId;
+    protected $apiKey;
+    protected $appName;
+    protected $authConfig;
+    /**
+     * @var string
+     */
+    private $configDir;
 
     /**
      * Instance of an gapps account for using api
      *
      * @param array $config
-     * @param $appId
      * @param string $accountId
+     * @param string $configDir
+     * @throws AccountServiceException
      */
-    public function __construct(array $config, $appId, $accountId = '')
+    public function __construct(array $config, $accountId = '', $configDir = '')
     {
         $this->config = $config;
         $this->accountId = $accountId;
-        $this->appId = $appId;
+        $this->prepare();
+        $this->configDir = $configDir;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * @return \Google_Client
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 
     /**
      * Authorize API with credentials
-     * @param \Google_Auth_AssertionCredentials $cred
      * @return \Google_Client
+     * @throws \Google_Exception
      */
-    public function authenticate(\Google_Auth_AssertionCredentials $cred)
+    public function authenticate()
     {
         $this->client = $client = new \Google_Client();
-        $this->client->setApplicationName($this->appId);
-
-        if (isset($_SESSION['token_gapps'])) {
-            $client->setAccessToken($_SESSION['token_gapps']);
-        }
-
-        $client->setClientId($this->config['ClientID']);
-        $client->setAssertionCredentials($cred);
-
-        if ($client->getAuth()->isAccessTokenExpired()) {
-            $client->getAuth()->refreshTokenWithAssertion($cred);
-        }
-
-        $_SESSION[$this->getServiceSessionTk($cred->scopes)] = $client->getAccessToken();
+        $this->client->setApplicationName($this->appName);
+        $this->client->setAuthConfigFile("{$this->configDir}/{$this->authConfig}");
+        $this->client->setSubject('administrator@brke.org');
 
         return $this->client;
     }
 
     /**
-     * Creates creadentials for a specific google apps service like 'calendar'
-     *
-     * @param string $serviceName
-     * @return \Google_Auth_AssertionCredentials
      * @throws AccountServiceException
      */
-    public function createCredentialsFor($scopeNames)
+    protected function prepare()
     {
-        $scopeNames = (array) $scopeNames;
-        $scopes = array_map(function ($el)
-        {
-            return sprintf('https://www.googleapis.com/auth/%s', $el);
-        }, $scopeNames);
-        $cred = new \Google_Auth_AssertionCredentials($this->config['ServiceID'], $scopes, $this->getKey());
-        if ($this->config['admin']) {
-            $cred->sub = $this->config['admin'];
+        $this->appName = (array_key_exists('app_name', $this->config)) ? $this->config['app_name'] : '';
+        if ($this->appName == '') {
+            throw new AccountServiceException("Missing application name in config({$this->accountId})");
         }
-        return $cred;
-    }
 
-    /**
-     * Gets key for access service
-     *
-     * @throws AccountServiceException
-     * @return string
-     */
-    public function getKey()
-    {
-        if ($this->key) {
-            return $this->key;
+        $this->authConfig = (array_key_exists('KeyFile', $this->config)) ? $this->config['KeyFile'] : '';
+        if ($this->authConfig == '') {
+            throw new AccountServiceException("Missing application KeyFile in config({$this->accountId})");
         }
-        $key = file_get_contents(
-            sprintf("%s/extensions/%s", $this->app['resources']->getPath('config'), $this->config['KeyFile']));
-        if (! $key) {
-            throw new AccountServiceException(sprintf("Can't read KeyFile: %s", $this->config['KeyFile']));
-        }
-        return $this->key = $key;
-    }
-
-    /**
-     * Makes a service session token string
-     *
-     * @param string $serviceName
-     * @return string
-     */
-    protected function getServiceSessionTk($scope)
-    {
-        $serviceName = substr($scope, strrpos($scope, '/') + 1);
-        return sprintf('service_token_%s_%s', $this->accountId, $serviceName);
+/*
+        $this->accountId = (array_key_exists('api_key', $this->config)) ? $this->config['api_key'] : '';
+        if ($this->accountId == '') {
+            throw new AccountServiceException("Missing application api_key in config({$this->accountId})");
+        }*/
     }
 }

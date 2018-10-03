@@ -1,34 +1,36 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps\Service\Directory;
 
-use Bolt\Extension\Rixbeck\Gapps\Extension;
-use Bolt\Extension\Rixbeck\Gapps\RecordType;
-use Bolt\Application;
-use Bolt\Extension\Rixbeck\Gapps\Iterator\PagingGroupsIterator;
-use Bolt\Extension\Rixbeck\Gapps\Service\BaseService;
+namespace Bolt\Extension\RixBeck\Gapps\Service\Directory;
 
+use Bolt\Extension\RixBeck\Gapps\Iterator\PagingGroupsIterator;
+use Bolt\Extension\RixBeck\Gapps\Service\BaseService;
+
+/**
+ * Class GroupsService
+ *
+ * @author Rix Beck <rix@neologik.hu>
+ *
+ * @property \Google_Service_Directory $service
+ */
 class GroupsService extends BaseService
 {
-
     public $groups;
 
     public function initialize()
     {
+        parent::initialize();
+
         $this->recordType = array();
-
         $this->defaultOptions = array();
+        $this->account->getClient()->addScope(\Google_Service_Directory::ADMIN_DIRECTORY_GROUP);
 
-        return parent::initialize();
+        return $this->service;
     }
 
     /*
      * (non-PHPdoc)
-     * @see \Bolt\Extension\Rixbeck\Gapps\Service\BaseService::createService()
+     * @see \Bolt\Extension\RixBeck\Gapps\Service\BaseService::createService()
      */
-    protected function createService($client)
-    {
-        return $this->service = new \Google_Service_Directory($client);
-    }
 
     public function groupList($options = array())
     {
@@ -38,10 +40,16 @@ class GroupsService extends BaseService
         return $this->groups = new PagingGroupsIterator($this->service->groups, $options);
     }
 
+    protected function createService($client)
+    {
+        return $this->service = new \Google_Service_Directory($client);
+    }
+
     /*
      * (non-PHPdoc)
-     * @see \Bolt\Extension\Rixbeck\Gapps\Service\BaseService::createServiceName()
+     * @see \Bolt\Extension\RixBeck\Gapps\Service\BaseService::createServiceName()
      */
+
     protected function createScopes()
     {
         return array(

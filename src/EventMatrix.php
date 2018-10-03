@@ -1,7 +1,7 @@
 <?php
-namespace Bolt\Extension\Rixbeck\Gapps;
+namespace Bolt\Extension\RixBeck\Gapps;
 
-use Bolt\Extension\Rixbeck\Gapps\Iterator\PagingEventsIterator;
+use Bolt\Extension\RixBeck\Gapps\Iterator\PagingEventsIterator;
 
 class EventMatrix
 {

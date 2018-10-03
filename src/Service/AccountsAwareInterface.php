@@ -3,11 +3,9 @@
  * @author Rix Beck <rix@neologik.hu>
  */
 
-namespace Bolt\Extension\Rixbeck\Gapps\Service;
+namespace Bolt\Extension\RixBeck\Gapps\Service;
 
 interface AccountsAwareInterface
 {
-    public function authenticate(\Google_Auth_AssertionCredentials $cred);
-
-    public function createCredentialsFor($scopeNames);
+    public function authenticate();
 }

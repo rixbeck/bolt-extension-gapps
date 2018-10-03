@@ -1,6 +1,6 @@
 <?php
 
-namespace Bolt\Extension\Rixbeck\Gapps;
+namespace Bolt\Extension\RixBeck\Gapps;
 
 class RomanNumbers
 {

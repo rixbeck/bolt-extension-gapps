@@ -1,9 +1,9 @@
 <?php
 
-namespace Bolt\Extension\Rixbeck\Gapps\Provider;
+namespace Bolt\Extension\RixBeck\Gapps\Provider;
 
 use Bolt\Extension\Bolt\BoltForms\Config\Config;
-use Bolt\Extension\Rixbeck\Gapps\Extender;
+use Bolt\Extension\RixBeck\Gapps\Extender;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
