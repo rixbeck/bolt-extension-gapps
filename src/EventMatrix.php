@@ -1,4 +1,5 @@
 <?php
+
 namespace Bolt\Extension\RixBeck\Gapps;
 
 use Bolt\Extension\RixBeck\Gapps\Iterator\PagingEventsIterator;
@@ -10,15 +11,15 @@ class EventMatrix
 
     protected $events;
 
-    protected $weekdays = array(
+    protected $weekdays = [
         'MO',
         'TU',
         'WE',
         'TH',
         'FR',
         'SA',
-        'SU'
-    );
+        'SU',
+    ];
 
     public function __construct(PagingEventsIterator $events, $type = 'weekbyhours')
     {
@@ -30,7 +31,7 @@ class EventMatrix
 
     protected function weekbyhours()
     {
-        $this->matrix = array();
+        $this->matrix = [];
 
         foreach ($this->events as $event) {
             $recur = new Recurrences($event);
@@ -42,17 +43,28 @@ class EventMatrix
                             $weekday = substr($day, 2);
                             $start = new \DateTime($event->getStart()->dateTime);
                             $time = $start->format('H:i');
-                            if (! key_exists($time, $this->matrix)) {
-                                $this->matrix[$time] = array();
+                            if (!key_exists($time, $this->matrix)) {
+                                $this->matrix[$time] = [];
                             }
                             $this->matrix[$time][$weekday][] = $event;
                         }
                     }
                 }
             }
+
+            if (!count($recur->recurrences)) {
+                $start = new \DateTime($event->getStart()->dateTime);
+                $weekday = $this->weekdays[$start->format('N') - 1];
+                $time = $start->format('H:i');
+                if (!key_exists($time, $this->matrix)) {
+                    $this->matrix[$time] = [];
+                }
+                $this->matrix[$time][$weekday][] = $event;
+            }
         }
 
         ksort($this->matrix);
+
         return $this->matrix;
     }
 }
